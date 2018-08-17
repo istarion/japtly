@@ -7,10 +7,13 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import ru.s_zg.japtly.Japtly;
 import ru.s_zg.japtly.exceptions.AptlyException;
+import ru.s_zg.japtly.model.DebPackage;
 import ru.s_zg.japtly.model.LocalRepository;
+import ru.s_zg.japtly.model.Package.DebPackage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 public class LocalReposApi {
     private static final String ENDPOINT_REPOS = "/api/repos";
@@ -56,4 +59,8 @@ public class LocalReposApi {
         return jacksonMapper.readValue(response.body().charStream(), LocalRepository.class);
     }
 
+    public List<DebPackage> search(String repositoryName) {
+        // TODO
+        return null;
+    }
 }
