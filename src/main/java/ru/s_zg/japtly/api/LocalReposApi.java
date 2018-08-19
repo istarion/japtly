@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import ru.s_zg.japtly.Japtly;
 import ru.s_zg.japtly.exceptions.AptlyException;
+import ru.s_zg.japtly.exceptions.NotExistsException;
+import ru.s_zg.japtly.model.AddPackagesResponse;
 import ru.s_zg.japtly.model.DebPackage;
 import ru.s_zg.japtly.model.LocalRepository;
 import ru.s_zg.japtly.model.SearchQuery;
@@ -140,7 +142,52 @@ public class LocalReposApi {
         if (response.code() == 409) {
             throw new AptlyException("Repository can’t be dropped: " + response.message());
         }
+    }
 
+    public AddPackagesResponse addPackagesFromUpload(String repoName, String dir) throws IOException {
+        return addPackagesFromUpload(repoName, dir, null, false, false);
+    }
 
+    public AddPackagesResponse addPackagesFromUpload(String repoName, String dir, String fileName) throws IOException {
+        return addPackagesFromUpload(repoName, dir, fileName, false ,false);
+    }
+
+    public AddPackagesResponse addPackagesFromUpload(
+            String repoName, String dir, String fileName, boolean noRemove, boolean forceReplace
+    ) throws IOException {
+        HttpUrl queryUrl = makeAddQueryUrl(repoName, dir, fileName, noRemove, forceReplace);
+
+        Request request = new Request.Builder()
+                .url(queryUrl)
+                .post(RequestBody.create(MediaType.parse("application/json"), "{}"))
+                .build();
+
+        Response response = Japtly.okHttpClient.newCall(request).execute();
+
+        if (response.code() == 404) {
+            throw new NotExistsException("Repository with such name doesn’t exist");
+        }
+
+        if (response.body() == null) {
+            throw new AptlyException(response.message());
+        }
+        return jacksonMapper.readValue(response.body().charStream(), AddPackagesResponse.class);
+    }
+
+    private HttpUrl makeAddQueryUrl(String repoName, String dir, String fileName, boolean noRemove, boolean forceReplace) {
+        HttpUrl.Builder urlBuilder = HttpUrl.get(aptlyEndpoint + ENDPOINT_REPOS).newBuilder();
+        urlBuilder.addPathSegment(repoName);
+        urlBuilder.addPathSegment("file");
+        urlBuilder.addPathSegment(dir);
+        if (fileName != null) {
+            urlBuilder.addPathSegment(fileName);
+        }
+        if (noRemove) {
+            urlBuilder.addQueryParameter("noRemove", "1");
+        }
+        if (forceReplace) {
+            urlBuilder.addQueryParameter("forceReplace", "1");
+        }
+        return urlBuilder.build();
     }
 }

@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test;
 import ru.s_zg.japtly.Japtly;
 import ru.s_zg.japtly.TestUtils;
 import ru.s_zg.japtly.exceptions.AptlyException;
+import ru.s_zg.japtly.model.AddPackagesResponse;
 import ru.s_zg.japtly.model.DebPackage;
 import ru.s_zg.japtly.model.LocalRepository;
 import ru.s_zg.japtly.model.SearchQuery;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,5 +98,30 @@ class LocalReposApiTest {
         japtly.localReposApi.delete(newRepo.getName());
 
         assertThrows(AptlyException.class, () -> japtly.localReposApi.showRepository(newRepo.getName())) ;
+    }
+
+    @Test
+    void addPackages() throws IOException {
+        LocalRepository newRepo = buildRepo();
+        japtly.localReposApi.createRepository(newRepo);
+
+        FileUploadApiTest fileUploadApiTest = new FileUploadApiTest();
+        FileUploadApiTest.beforeAll();
+        fileUploadApiTest.before();
+        fileUploadApiTest.uploadFile();
+        String uploadedFilename = japtly.fileUploadApi.listFiles("test").get(0);
+
+        AddPackagesResponse addResult = japtly.localReposApi.addPackagesFromUpload(newRepo.getName(), "test");
+        AddPackagesResponse expectedResponse = new AddPackagesResponse();
+        expectedResponse.setFailedFiles(Collections.emptyList());
+        AddPackagesResponse.Report expectedReport = new AddPackagesResponse.Report();
+        expectedReport.setAdded(Collections.singletonList(
+                uploadedFilename.split("\\.deb")[0] + " added"
+        ));
+        expectedReport.setRemoved(Collections.emptyList());
+        expectedReport.setWarnings(Collections.emptyList());
+        expectedResponse.setReport(expectedReport);
+
+        assertEquals(expectedResponse, addResult);
     }
 }
