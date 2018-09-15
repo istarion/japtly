@@ -145,7 +145,7 @@ public class LocalReposApi {
     }
 
     public AddPackagesResponse addPackagesFromUpload(String repoName, String dir) throws IOException {
-        return addPackagesFromUpload(repoName, dir, null, false, false);
+        return addPackagesFromUpload(repoName, dir, null);
     }
 
     public AddPackagesResponse addPackagesFromUpload(String repoName, String dir, String fileName) throws IOException {

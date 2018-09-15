@@ -10,6 +10,9 @@ public class DebPackage {
     @JsonProperty("Architecture")
     private String architecture;
 
+    @JsonProperty("Depends")
+    private String depends;
+
     @JsonProperty("Description")
     private String description;
 
@@ -31,7 +34,7 @@ public class DebPackage {
     @JsonProperty("License")
     private String license;
 
-    @JsonProperty("MD5Sum")
+    @JsonProperty("MD5sum")
     private String md5sum;
 
     @JsonProperty("Maintainer")
@@ -51,6 +54,9 @@ public class DebPackage {
 
     @JsonProperty("SHA256")
     private String sha256;
+
+    @JsonProperty("SHA512")
+    private String sha512;
 
     @JsonProperty("Section")
     private String section;

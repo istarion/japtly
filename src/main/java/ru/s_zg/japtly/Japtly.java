@@ -4,6 +4,7 @@ import okhttp3.OkHttpClient;
 import ru.s_zg.japtly.api.FileUploadApi;
 import ru.s_zg.japtly.api.LocalReposApi;
 import ru.s_zg.japtly.api.MiscApi;
+import ru.s_zg.japtly.api.PackageApi;
 
 import java.net.URL;
 
@@ -13,10 +14,12 @@ public class Japtly {
     public final MiscApi miscApi;
     public final LocalReposApi localReposApi;
     public final FileUploadApi fileUploadApi;
+    public final PackageApi packageApi;
 
     public Japtly(URL aptlyEndpoint) {
         miscApi = new MiscApi(aptlyEndpoint);
         localReposApi = new LocalReposApi(aptlyEndpoint);
         fileUploadApi = new FileUploadApi(aptlyEndpoint);
+        packageApi = new PackageApi(aptlyEndpoint);
     }
 }

@@ -37,7 +37,7 @@ class LocalReposApiTest {
         assertEquals(newRepo, created);
     }
 
-    private LocalRepository buildRepo() {
+    public static LocalRepository buildRepo() {
         return LocalRepository.builder()
                 .name(UUID.randomUUID().toString())
                 .comment("1")

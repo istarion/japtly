@@ -1,6 +1,5 @@
 package ru.s_zg.japtly;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -17,6 +16,6 @@ public class TestUtils {
     }
 
     public static Path getTestPackage() {
-        return Paths.get(TestUtils.class.getResource("/gnome-shell-extension-ubuntu-dock_63ubuntu1_all.deb").getFile());
+        return Paths.get(TestUtils.class.getResource("/supersh_1.1-2_all.deb").getFile());
     }
 }
